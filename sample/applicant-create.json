@@ -1,0 +1,46 @@
+{
+  "firstName": "Aarav",
+  "middleName": "",
+  "lastName": "Sharma",
+  "phoneNumber": "9876543210",
+  "email": "aarav@example.com",
+  "dob": "1996-05-12",
+  "gender": "MALE",
+  "maritalStatus": "SINGLE",
+  "currentAddress": "221B Baker Street, Mumbai",
+  "permanentAddress": "221B Baker Street, Mumbai",
+  "aadharNum": "123412341234",
+  "panNum": "ABCDE1234F",
+  "occupationType": "SALARIED",
+  "companyName": "Contoso Ltd",
+  "designation": "Software Engineer",
+  "workExperience": 4,
+  "monthlySalary": 95000,
+  "officeAddress": "Contoso Tech Park, Pune",
+  "existingLoansEmi": 4500,
+  "creditCardEmi": 0,
+  "otherIncome": 0,
+  "monthlyExpenses": 35000,
+  "newLoanDetails": {
+    "loanType": "HOME",
+    "loanAmount": 3000000,
+    "tenureMonths": 240
+  },
+  "existingLoans": [
+    {
+      "loanType": "PERSONAL",
+      "amount": 200000,
+      "tenureMonths": 24,
+      "purpose": "Medical"
+    }
+  ],
+  "references": [
+    { "fullName": "Riya Verma", "phone": "9900011111", "relationship": "Friend" },
+    { "fullName": "Vikram Rao", "phone": "9800022222", "relationship": "Colleague" }
+  ],
+  "declaration": {
+    "agreed": true,
+    "signature": "Aarav Sharma",
+    "date": "2025-09-01"
+  }
+}
