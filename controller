@@ -1,0 +1,43 @@
+package org.example.controller;
+
+import org.example.entities.MasterCustomer;
+import org.example.service.MasterCustomerService;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/customers")
+public class MasterCustomerController {
+
+    private final MasterCustomerService customerService;
+
+    public MasterCustomerController(MasterCustomerService customerService) {
+        this.customerService = customerService;
+    }
+
+    @PostMapping
+    public MasterCustomer createCustomer(@RequestBody MasterCustomer customer) {
+        return customerService.createCustomer(customer);
+    }
+
+    @PutMapping("/{id}")
+    public MasterCustomer updateCustomer(@PathVariable Integer id, @RequestBody MasterCustomer customer) {
+        return customerService.updateCustomer(id, customer);
+    }
+
+    @GetMapping("/{id}")
+    public MasterCustomer getCustomerById(@PathVariable Integer id) {
+        return customerService.getCustomerById(id);
+    }
+
+    @GetMapping
+    public List<MasterCustomer> getAllCustomers() {
+        return customerService.getAllCustomers();
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCustomer(@PathVariable Integer id) {
+        customerService.deleteCustomer(id);
+    }
+}
