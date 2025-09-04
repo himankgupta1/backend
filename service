@@ -1,0 +1,71 @@
+//MasterCustomerService.java
+
+package org.example.service;
+
+import org.example.entities.MasterCustomer;
+import java.util.List;
+
+public interface MasterCustomerService {
+    MasterCustomer createCustomer(MasterCustomer customer);
+    MasterCustomer updateCustomer(Integer id, MasterCustomer customer);
+    MasterCustomer getCustomerById(Integer id);
+    List<MasterCustomer> getAllCustomers();
+    void deleteCustomer(Integer id);
+}
+
+
+//MasterCustomerServiceImpl.java
+
+package org.example.service;
+
+import org.example.entities.MasterCustomer;
+import org.example.persistence.MasterCustomerRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class MasterCustomerServiceImpl implements MasterCustomerService {
+
+    private final MasterCustomerRepository repository;
+
+    public MasterCustomerServiceImpl(MasterCustomerRepository repository) {
+        this.repository = repository;
+    }
+
+    @Override
+    public MasterCustomer createCustomer(MasterCustomer customer) {
+        return repository.save(customer);
+    }
+
+    @Override
+    public MasterCustomer updateCustomer(Integer id, MasterCustomer customer) {
+        return repository.findById(id)
+                .map(existing -> {
+                    existing.setFirstName(customer.getFirstName());
+                    existing.setLastName(customer.getLastName());
+                    existing.setEmail(customer.getEmail());
+                    existing.setPhoneNum(customer.getPhoneNum());
+                    existing.setDob(customer.getDob());
+                    existing.setGender(customer.getGender());
+                    return repository.save(existing);
+                })
+                .orElseThrow(() -> new RuntimeException("Customer not found with id " + id));
+    }
+
+    @Override
+    public MasterCustomer getCustomerById(Integer id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id " + id));
+    }
+
+    @Override
+    public List<MasterCustomer> getAllCustomers() {
+        return repository.findAll();
+    }
+
+    @Override
+    public void deleteCustomer(Integer id) {
+        repository.deleteById(id);
+    }
+}
