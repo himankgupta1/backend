@@ -1,0 +1,148 @@
+//LoanDocService
+
+
+package org.example.service;
+
+import org.example.entities.LoanDoc;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+public interface LoanDocService {
+    LoanDoc uploadDocument(Integer customerId, MultipartFile file, String docType, String remark) throws IOException;
+    LoanDoc getDocumentById(Integer id);
+    List<LoanDoc> getDocumentsByCustomer(Integer customerId);
+}
+
+
+
+
+
+
+//LoanDocServiceImpl.java
+package org.example.service;
+
+import org.example.entities.LoanDoc;
+import org.example.entities.MasterCustomer;
+import org.example.persistence.LoanDocRepository;
+import org.example.persistence.MasterCustomerRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+@Service
+public class LoanDocServiceImpl implements LoanDocService {
+
+    private final LoanDocRepository loanDocRepository;
+    private final MasterCustomerRepository customerRepository;
+
+    private final String UPLOAD_DIR = "uploads/";
+
+    public LoanDocServiceImpl(LoanDocRepository loanDocRepository, MasterCustomerRepository customerRepository) {
+        this.loanDocRepository = loanDocRepository;
+        this.customerRepository = customerRepository;
+    }
+
+    @Override
+    public LoanDoc uploadDocument(Integer customerId, MultipartFile file, String docType, String remark) throws IOException {
+        MasterCustomer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found with id: " + customerId));
+
+        // Save file locally
+        Path path = Paths.get(UPLOAD_DIR + file.getOriginalFilename());
+        Files.createDirectories(path.getParent());
+        Files.write(path, file.getBytes());
+
+        // Save record in DB
+        LoanDoc loanDoc = new LoanDoc();
+        loanDoc.setCustomer(customer);
+        loanDoc.setDocType(docType);
+        loanDoc.setFileUri(path.toString());
+        loanDoc.setStatus("UPLOADED");
+        loanDoc.setRemark(remark);
+
+        return loanDocRepository.save(loanDoc);
+    }
+
+    @Override
+    public LoanDoc getDocumentById(Integer id) {
+        return loanDocRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Document not found with id: " + id));
+    }
+
+    @Override
+    public List<LoanDoc> getDocumentsByCustomer(Integer customerId) {
+        return loanDocRepository.findByCustomer_CustId(customerId);
+    }
+}
+
+
+
+//LoanDocController.java
+
+package org.example.controller;
+
+import org.example.entities.LoanDoc;
+import org.example.service.LoanDocService;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/docs")
+public class LoanDocController {
+
+    private final LoanDocService loanDocService;
+
+    public LoanDocController(LoanDocService loanDocService) {
+        this.loanDocService = loanDocService;
+    }
+
+    @PostMapping("/upload/{customerId}")
+    public LoanDoc uploadDocument(
+            @PathVariable Integer customerId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("docType") String docType,
+            @RequestParam(value = "remark", required = false) String remark
+    ) throws IOException {
+        return loanDocService.uploadDocument(customerId, file, docType, remark);
+    }
+
+    @GetMapping("/{id}")
+    public LoanDoc getDocumentById(@PathVariable Integer id) {
+        return loanDocService.getDocumentById(id);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public List<LoanDoc> getDocumentsByCustomer(@PathVariable Integer customerId) {
+        return loanDocService.getDocumentsByCustomer(customerId);
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<FileSystemResource> downloadDocument(@PathVariable Integer id) {
+        LoanDoc loanDoc = loanDocService.getDocumentById(id);
+        FileSystemResource file = new FileSystemResource(loanDoc.getFileUri());
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getFilename())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(file);
+    }
+}
+
+
+
+
+
