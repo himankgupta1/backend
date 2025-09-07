@@ -1,0 +1,8 @@
+{
+  "doc_type": "PAN",
+  "file_uri": "/files/pan.pdf",
+  "status": "RECEIVED",
+  "remark": "ok",
+  "loan": { "id": 1 },
+  "customer": { "id": 100 }
+}
