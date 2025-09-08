@@ -1,0 +1,48 @@
+{
+  "id": 1,
+  "firstName": "John",
+  "middleName": "Michael",
+  "lastName": "Doe",
+  "DOB": "1990-05-10",
+  "age": 35,
+  "gender": "Male",
+  "adharNum": "123456789012",
+  "panNum": "ABCDE1234F",
+  "current_address": "123, Green Street, Delhi",
+  "permanent_address": "123, Green Street, Delhi",
+  "created_at": "2025-09-08",
+  "update_at": "2025-09-08",
+  "phone_num": "9876543210",
+  "marital_status": "Single",
+  "email": "john.doe@example.com",
+
+  "login": {
+    "id": 10,
+    "username": "johndoe",
+    "password": "secret123",
+    "role": "USER"
+  },
+
+
+
+
+
+--------------------2-----------------------------------
+
+{
+  "id": 1,
+  "firstName": "John",
+  "lastName": "Doe",
+  "DOB": "1990-05-10",
+  "age": 35,
+  "gender": "Male",
+  "adharNum": "123456789012",
+  "panNum": "ABCDE1234F",
+  "current_address": "123, Green Street",
+  "permanent_address": "123, Green Street",
+  "created_at": "2025-09-08",
+  "update_at": "2025-09-08",
+  "phone_num": "9876543210",
+  "marital_status": "Single",
+  "email": "john.doe@example.com"
+}
